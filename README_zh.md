@@ -3,7 +3,7 @@
 </p>
 <p align="center"> <a href="./README.md">English</a> | 简体中文</p>
 
-vscode-starter 是一个用于快速创建 vscode 插件项目的模板,它可以帮助你快速创建一个 vscode 插件项目,让你专注于插件的开发.
+>WIP: 快速预览环境变量的值
 
 ## Installation
 

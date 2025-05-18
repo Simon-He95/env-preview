@@ -3,7 +3,7 @@
 </p>
 <p align="center"> English | <a href="./README_zh.md">简体中文</a></p>
 
-vscode-starter is a template for quickly creating a vscode plug-in project. It can help you quickly create a vscode plug-in project, allowing you to focus on plug-in development.
+>WIP: Quickly preview the value of an environment variable
 
 ## Installation
 
