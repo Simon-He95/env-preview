@@ -1,0 +1,63 @@
+{
+  "publisher": "simonhe",
+  "name": "env-preview",
+  "displayName": "env-preview",
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.9.0",
+  "description": "提供 .env 环境变量的 preview",
+  "author": "Simon He <https://github.com/Simon-He95>",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/Simon-He95",
+  "homepage": "https://github.com/Simon-He95/env-preview#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Simon-He95/env-preview"
+  },
+  "bugs": {
+    "url": "https://github.com/Simon-He95/env-preview/issues"
+  },
+  "sponsor": {
+    "url": "https://github.com/Simon-He95/sponsor"
+  },
+  "keywords": [
+    "vscode",
+    "vscode-use",
+    "vscode-template"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/index.js",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.75.1"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "scripts": {
+    "dev": "nr build",
+    "test": "vitest",
+    "build": "tsdown",
+    "pack": "vsce package --no-dependencies",
+    "lint": "eslint . --cache",
+    "lint:fix": "nr lint --fix",
+    "publish": "vsce publish --no-dependencies",
+    "typecheck": "tsc --noEmit",
+    "release": "nr build --minify && bumpp && nr publish"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.16.0",
+    "@types/node": "^18.19.86",
+    "@types/vscode": "1.75.1",
+    "@vscode-use/utils": "0.1.54",
+    "@vscode/vsce": "^3.3.2",
+    "bumpp": "^9.11.1",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.25.1",
+    "tinyglobby": "^0.2.13",
+    "tsdown": "^0.9.5",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
+  }
+}
