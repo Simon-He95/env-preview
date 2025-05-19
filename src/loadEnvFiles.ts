@@ -1,15 +1,15 @@
+import { readFile } from 'node:fs/promises'
 // loadEnvFiles 加载所有 .env.xxx 的文件
-import { addEventListener, getRootPath, watchFiles } from '@vscode-use/utils';
-import { readFile } from 'node:fs/promises';
-import { glob } from 'tinyglobby';
-import { parse } from 'dotenv';
+import { addEventListener, getRootPath, watchFiles } from '@vscode-use/utils'
+import { parse } from 'dotenv'
+import { glob } from 'tinyglobby'
 
 const cwd = getRootPath()!
-export const envCacheMap = new Map()
+export const envCacheMap = new Map<string, { env: Record<string, string>, content: string }>()
 export async function loadEnvFiles() {
   const files = await glob('**/.env.*', { onlyFiles: true, cwd, absolute: true })
 
-  files.forEach(filepath => {
+  files.forEach((filepath) => {
     // 如果已经在缓存中就跳过
     if (envCacheMap.has(filepath))
       return
@@ -24,18 +24,23 @@ export async function loadEnvFiles() {
     },
     onDelete(e) {
       envCacheMap.delete(e.path)
-    }
+    },
   })
 }
 
 export async function readEnv(file: string) {
   const content = await readFile(file, 'utf-8')
   try {
-    const envObject = parse(content); // 解析为对象
-    envCacheMap.set(file, envObject)
-    return envObject;
-  } catch (error) {
+    const env = parse(content) // 解析为对象
+    envCacheMap.set(file, {
+      env,
+      content,
+    })
+    return env
+  }
+  catch (error) {
     // 文件编辑中可能有错误
+    console.error('loadEnvFiles error', error)
   }
 }
 
