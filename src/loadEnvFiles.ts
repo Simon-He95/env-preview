@@ -47,7 +47,7 @@ export async function readEnv(file: string) {
 export async function loadEnv() {
   // 监听 .env.xx 文件的新增，然后重新执行 loadEnvFiles()
   let dispose = await loadEnvFiles()
-  addEventListener('file-create', async (files) => {
+  addEventListener('file-create', async ({ files }) => {
     let isNeedUpdate = false
     files.forEach((file: any) => {
       const newUri = file.path
@@ -61,7 +61,7 @@ export async function loadEnv() {
     }
   })
 
-  addEventListener('rename', async (files) => {
+  addEventListener('rename', async ({ files }) => {
     let isNeedUpdate = false
     files.forEach((file: any) => {
       const oldUri = file.oldUri.path
