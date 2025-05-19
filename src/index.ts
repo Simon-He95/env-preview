@@ -1,6 +1,7 @@
 import type { Position } from 'vscode'
-import { createExtension, createMarkdownString, getLineText, getPosition, registerHoverProvider } from '@vscode-use/utils'
+import { createExtension, createMarkdownString, getPosition, registerHoverProvider } from '@vscode-use/utils'
 import { runCommands } from './command'
+import { getEnvKey } from './getEnvKey'
 import { envCacheMap, loadEnv } from './loadEnvFiles'
 
 export = createExtension(async () => {
@@ -12,7 +13,7 @@ export = createExtension(async () => {
       return
 
     // 1. 从 envCacheMap 中获取 fileUrl 和 envObject
-    // 2. 生产 hoverMarkdown, 小图标点击直接打开到对应 env 文件的变量上,提供快速修改的能力
+    // 2. 生成 hoverMarkdown, 小图标点击直接打开到对应 env 文件的变量上, 提供快速修改跳转到对应文件 和 复制变量值的命令
     const results: { fileUrl: string, envValue: string, selection: [number, number, number, number] }[] = []
     for (const [fileUrl, { env, content }] of envCacheMap.entries()) {
       if (env[envKey] !== undefined) {
@@ -60,27 +61,4 @@ export = createExtension(async () => {
 
     return { contents: [markdown] }
   })
-}, () => {
-
 })
-
-function getEnvKey(position: Position) {
-  const regexList = [
-    /import\.meta\.env\.(VITE_\w*)/g,
-    /process\.env\.([A-Z0-9_]+)/g,
-  ]
-  const { line, character } = position
-  const lineText = getLineText(line)!
-  for (const regex of regexList) {
-    regex.lastIndex = 0 // 避免 g 标志带来的 lastIndex 问题
-    let match
-    // eslint-disable-next-line no-cond-assign
-    while ((match = regex.exec(lineText)) !== null) {
-      const start = match.index
-      const end = start + match[0].length
-      if (character >= start && character <= end) {
-        return match[1]
-      }
-    }
-  }
-}

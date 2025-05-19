@@ -1,22 +1,24 @@
-name: Release
+name: Code Review
+
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
-  push:
-    tags:
-      - 'v*'
+  pull_request:
+    types: [opened, reopened, synchronize]
 
 jobs:
-  release:
+  test:
+    if: ${{ contains(github.event.*.labels.*.name, 'gpt review') }} # Optional; to run only when a label is attached
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-
-      - run: npx changelogithub
+      - uses: anc95/ChatGPT-CodeReview@main
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Optional
+          LANGUAGE: Chinese
+          MODEL:
+          top_p: 1
+          temperature: 1
