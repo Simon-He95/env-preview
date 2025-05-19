@@ -2,7 +2,7 @@
   "publisher": "simonhe",
   "name": "env-preview",
   "displayName": "env-preview",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "packageManager": "pnpm@10.11.0",
   "description": "提供 .env 环境变量的 preview",
   "author": "Simon He <https://github.com/Simon-He95>",
