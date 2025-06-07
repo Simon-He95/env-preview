@@ -6,11 +6,11 @@
 
 <p align="center">
   <!-- Add relevant badges here. Example: -->
-  <a href="https://marketplace.visualstudio.com/items?itemName=Simon-He95.env-preview">
-    <img src="https://img.shields.io/visual-studio-marketplace/v/Simon-He95.env-preview.svg?color=blue&label=VS%20Code%20Marketplace&logo=visualstudiocode" alt="VS Code Marketplace Version">
+  <a href="https://marketplace.visualstudio.com/items?itemName=simonhe.env-preview">
+    <img src="https://img.shields.io/visual-studio-marketplace/v/simonhe.env-preview.svg?color=blue&label=VS%20Code%20Marketplace&logo=visualstudiocode" alt="VS Code Marketplace Version">
   </a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=Simon-He95.env-preview">
-    <img src="https://img.shields.io/visual-studio-marketplace/d/Simon-He95.env-preview.svg?color=blue&label=Downloads" alt="VS Code Marketplace Downloads">
+  <a href="https://marketplace.visualstudio.com/items?itemName=simonhe.env-preview">
+    <img src="https://img.shields.io/visual-studio-marketplace/d/simonhe.env-preview.svg?color=blue&label=Downloads" alt="VS Code Marketplace Downloads">
   </a>
   <a href="./LICENSE">
     <img src="https://img.shields.io/github/license/Simon-He95/env-preview?color=blue" alt="License">
@@ -37,19 +37,19 @@
 3.  Search for `Env Preview`.
 4.  Click **Install**.
 
-Or, install via the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Simon-He95.env-preview).
+Or, install via the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=simonhe.env-preview).
 
 ## 💡 Usage
 
 Once installed, simply open a project with `.env` files and hover your mouse cursor over an environment variable in your code (e.g., in a JavaScript, TypeScript, or other supported file types). A tooltip will appear showing the values from your configured `.env` files.
 
 <!-- Consider adding a GIF or screenshot here demonstrating the hover preview -->
-<!-- 
+<!--
 ## Example Screenshot/GIF
 
 <p align="center">
   <img src="./assets/demo.gif" alt="Env Preview Demo">
-</p> 
+</p>
 -->
 
 ## 🙏 Sponsors
