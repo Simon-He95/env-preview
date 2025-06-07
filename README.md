@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="200" src="./assets/kv.svg" alt="Env Preview Logo">
+  <img height="200" src="./assets/kv.png" alt="Env Preview Logo">
 </p>
 
 <h1 align="center">Env Preview for VS Code</h1>
