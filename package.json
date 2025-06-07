@@ -1,10 +1,10 @@
 {
   "publisher": "simonhe",
   "name": "env-preview",
-  "displayName": "env-preview",
+  "displayName": "Env Variable Preview",
   "version": "0.0.4",
   "packageManager": "pnpm@10.11.1",
-  "description": "提供 .env 环境变量的 preview",
+  "description": "Instantly preview .env file variable values on hover in VS Code. Supports multiple .env files and provides quick edit/copy actions.",
   "author": "Simon He <https://github.com/Simon-He95>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/Simon-He95",
@@ -20,9 +20,18 @@
     "url": "https://github.com/Simon-He95/sponsor"
   },
   "keywords": [
+    "env",
+    ".env",
+    "environment variables",
+    "preview",
+    "hover",
+    "tooltip",
     "vscode",
-    "vscode-use",
-    "vscode-template"
+    "vscode-extension",
+    "developer tools",
+    "productivity",
+    "config",
+    "dotenv"
   ],
   "categories": [
     "Other"
