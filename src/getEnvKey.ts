@@ -1,5 +1,5 @@
 import type { Position } from 'vscode'
-import { getLineText } from '@vscode-use/utils'
+import { getKeyWords, getLineText } from '@vscode-use/utils'
 
 export function getEnvKey(position: Position) {
   const regexList = [
@@ -20,4 +20,12 @@ export function getEnvKey(position: Position) {
       }
     }
   }
+  const keyWords = getKeyWords(position)
+  if (!keyWords)
+    return
+
+  if (keyWords[0].toLowerCase() === keyWords[0])
+    return
+
+  return keyWords
 }

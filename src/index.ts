@@ -8,7 +8,7 @@ export = createExtension(async () => {
   await loadEnv()
   runCommands()
   registerHoverProvider('*', (_: any, position: Position) => {
-    const envKey = getEnvKey(position)
+    let envKey = getEnvKey(position)
     if (!envKey)
       return
 
@@ -16,17 +16,21 @@ export = createExtension(async () => {
     // 2. 生成 hoverMarkdown, 小图标点击直接打开到对应 env 文件的变量上, 提供快速修改跳转到对应文件 和 复制变量值的命令
     const results: { fileUrl: string, envValue: string, selection: [number, number, number, number] }[] = []
     for (const [fileUrl, { env, content }] of envCacheMap.entries()) {
-      if (env[envKey] !== undefined) {
-        const matchContent = `${envKey}=`
-        const positionOffset = content.indexOf(matchContent)
-        const positionStart = getPosition(positionOffset, content).position
-        const positionEnd = getPosition(positionOffset + matchContent.length - 1, content).position
-        results.push({
-          fileUrl,
-          envValue: env[envKey],
-          selection: [positionStart.line, positionStart.character, positionEnd.line, positionEnd.character],
-        })
+      if (env[envKey] === undefined) {
+        if (env[`VITE_${envKey}`] !== undefined)
+          envKey = `VITE_${envKey}`
+        else
+          continue
       }
+      const matchContent = `${envKey}=`
+      const positionOffset = content.indexOf(matchContent)
+      const positionStart = getPosition(positionOffset, content).position
+      const positionEnd = getPosition(positionOffset + matchContent.length - 1, content).position
+      results.push({
+        fileUrl,
+        envValue: env[envKey] || '\'\'',
+        selection: [positionStart.line, positionStart.character, positionEnd.line, positionEnd.character],
+      })
     }
     if (results.length === 0)
       return
@@ -55,7 +59,7 @@ export = createExtension(async () => {
         `command:env-preview.copy?${encodeURIComponent(JSON.stringify([envValue]))}`,
       )
       markdown.appendMarkdown(
-        `**${envName}**: \`${envValue}\` [$(edit)](${editCommandUri} "在 env 文件中编辑") [$(copy)](${copyCommandUri} "复制变量值")  \n`,
+        `***${envName}***: \`${envValue}\` [Edit](${editCommandUri} "在 env 文件中编辑") [Copy](${copyCommandUri} "复制变量值")  \n`,
       )
     }
 
