@@ -1,7 +1,7 @@
 {
   "publisher": "simonhe",
   "name": "env-preview",
-  "displayName": "Env Variable Preview",
+  "displayName": "Env Preview",
   "version": "0.0.6",
   "packageManager": "pnpm@10.11.1",
   "description": "Instantly preview .env file variable values on hover in VS Code. Supports multiple .env files and provides quick edit/copy actions.",
@@ -22,19 +22,32 @@
   "keywords": [
     "env",
     ".env",
+    "environment",
     "environment variables",
+    "variables",
     "preview",
     "hover",
     "tooltip",
+    "values",
+    "inspector",
+    "debug",
+    "settings",
+    "config",
+    "configuration",
+    "dotenv",
+    "vite",
+    "nextjs",
+    "nodejs",
+    "javascript",
+    "typescript",
     "vscode",
     "vscode-extension",
-    "developer tools",
-    "productivity",
-    "config",
-    "dotenv"
+    "developer-tools",
+    "productivity"
   ],
   "categories": [
-    "Other"
+    "Other",
+    "Programming Languages"
   ],
   "main": "./dist/index.js",
   "icon": "icon.png",
