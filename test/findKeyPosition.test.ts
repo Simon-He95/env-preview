@@ -1,4 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+import { findKeyPosition } from '../src/findKeyPosition'
 
 // mock getPosition from @vscode-use/utils before importing target
 vi.mock('@vscode-use/utils', () => ({
@@ -18,16 +20,14 @@ vi.mock('@vscode-use/utils', () => ({
   },
 }))
 
-import { findKeyPosition } from '../src/findKeyPosition'
-
 describe('findKeyPosition', () => {
   it('finds simple key at line start', () => {
     const content = 'FOO=bar\n'
     const loc = findKeyPosition(content, 'FOO')!
     expect(loc.startLine).toBe(0)
     expect(loc.startChar).toBe(0)
-  // key length is 3, endChar should be 3 (end offset points at end of key)
-  expect(loc.endChar).toBe(3)
+    // key length is 3, endChar should be 3 (end offset points at end of key)
+    expect(loc.endChar).toBe(3)
   })
 
   it('finds key with export and spaces', () => {
@@ -47,16 +47,16 @@ describe('findKeyPosition', () => {
 
   it('returns first occurrence when key repeats', () => {
     const content = 'FOO=first\nOTHER=1\nFOO=second\n'
-  const loc = findKeyPosition(content, 'FOO')!
-  // now returns last occurrence (line 2)
-  expect(loc.startLine).toBe(2)
+    const loc = findKeyPosition(content, 'FOO')!
+    // now returns last occurrence (line 2)
+    expect(loc.startLine).toBe(2)
   })
 
   it('finds key when value is quoted', () => {
     const content = 'FOO = "a quoted value"\n'
     const loc = findKeyPosition(content, 'FOO')!
     expect(loc.startLine).toBe(0)
-  expect(loc.startChar).toBe(0)
+    expect(loc.startChar).toBe(0)
   })
 
   it('handles keys with regex metacharacters safely', () => {

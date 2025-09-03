@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { formatHoverMarkdown } from '../src/hoverFormatter'
 
 describe('formatHoverMarkdown', () => {
@@ -18,10 +18,10 @@ describe('formatHoverMarkdown', () => {
     const results = [
       { fileUrl: '/path/.env', envValue: 'verylongsecretvalue', selection: [0, 0, 0, 3] as any },
     ]
-  const md = formatHoverMarkdown('FOO', results, { maskSecrets: true, maskHead: 3, maskTail: 2 })
-  // masked display should be present (e.g., ver...ue)
-  expect(md).toMatch(/\w{3}\.\.\./)
-  // the copy command should still be available (may contain encoded raw value)
-  expect(md).toContain('command:env-preview.copy')
+    const md = formatHoverMarkdown('FOO', results, { maskSecrets: true, maskHead: 3, maskTail: 2 })
+    // masked display should be present (e.g., ver...ue)
+    expect(md).toMatch(/\w{3}\.\.\./)
+    // the copy command should still be available (may contain encoded raw value)
+    expect(md).toContain('command:env-preview.copy')
   })
 })

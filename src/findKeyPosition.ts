@@ -1,7 +1,7 @@
 import { getPosition as calcPosition } from '@vscode-use/utils'
 import { escapeRegExp } from './utils/regex'
 
-export type KeyLocation = {
+export interface KeyLocation {
   startOffset: number
   endOffset: number
   startLine: number
@@ -12,7 +12,7 @@ export type KeyLocation = {
 
 // Find the position of a key declaration in a .env file content.
 // Supports optional `export`, spaces around `=`, and basic inline comments.
-export type FindKeyOptions = { strategy?: 'first' | 'last' }
+export interface FindKeyOptions { strategy?: 'first' | 'last' }
 /**
  * Find the position of a key declaration in a .env file content.
  *

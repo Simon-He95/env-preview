@@ -11,7 +11,7 @@ export function getEnvKey(position: Position): string | undefined {
   for (const pattern of regexPatterns) {
     const regex = new RegExp(pattern, 'g')
     // use matchAll with a fresh global regex to iterate matches reliably
-    // eslint-disable-next-line no-restricted-syntax
+
     for (const match of lineText.matchAll(regex)) {
       const fullMatchStart = (match as any).index as number
       const groupText = match[1]

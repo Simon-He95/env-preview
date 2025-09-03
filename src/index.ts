@@ -1,16 +1,16 @@
 import type { Position } from 'vscode'
-import { createExtension, createMarkdownString, getPosition, registerHoverProvider } from '@vscode-use/utils'
+import { createExtension, createMarkdownString, registerHoverProvider } from '@vscode-use/utils'
 import { runCommands } from './command'
-import { getEnvKey } from './getEnvKey'
-import { envCacheMap, loadEnv } from './loadEnvFiles'
 import { findKeyPosition } from './findKeyPosition'
+import { getEnvKey } from './getEnvKey'
 import { formatHoverMarkdown } from './hoverFormatter'
+import { envCacheMap, loadEnv } from './loadEnvFiles'
 
 export = createExtension(async () => {
   await loadEnv()
   runCommands()
   registerHoverProvider('*', (_: any, position: Position) => {
-    let envKey = getEnvKey(position)
+    const envKey = getEnvKey(position)
     if (!envKey)
       return
 
@@ -32,17 +32,17 @@ export = createExtension(async () => {
         continue
       results.push({
         fileUrl,
-        envValue: env[searchKey] || "''",
+        envValue: env[searchKey] || '\'\'',
         selection: [loc.startLine, loc.startChar, loc.endLine, loc.endChar],
       })
     }
     if (results.length === 0)
       return
 
-  const markdown = createMarkdownString()
-  markdown.isTrusted = true
-  const mdText = formatHoverMarkdown(envKey, results, { maskSecrets: false })
-  markdown.appendMarkdown(mdText)
-  return { contents: [markdown] }
+    const markdown = createMarkdownString()
+    markdown.isTrusted = true
+    const mdText = formatHoverMarkdown(envKey, results, { maskSecrets: false })
+    markdown.appendMarkdown(mdText)
+    return { contents: [markdown] }
   })
 })

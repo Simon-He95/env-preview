@@ -1,4 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { envCacheMap, readEnv } from '../src/loadEnvFiles'
 
 // mock vscode utilities to avoid requiring 'vscode' in tests
 vi.mock('@vscode-use/utils', () => ({
@@ -8,21 +12,26 @@ vi.mock('@vscode-use/utils', () => ({
   },
   addEventListener: () => {},
 }))
-import { writeFileSync, rmSync, mkdirSync } from 'fs'
-import path from 'path'
-
-import { readEnv, envCacheMap } from '../src/loadEnvFiles'
 
 describe('readEnv', () => {
   const tmpDir = path.resolve(__dirname, '.tmp')
   const tmpFile = path.join(tmpDir, '.env.test')
 
   beforeAll(() => {
-    try { mkdirSync(tmpDir) } catch {} // ignore
+    try {
+      mkdirSync(tmpDir)
+    }
+    catch {} // ignore
   })
   afterAll(() => {
-    try { rmSync(tmpFile) } catch {}
-    try { rmSync(tmpDir) } catch {}
+    try {
+      rmSync(tmpFile)
+    }
+    catch {}
+    try {
+      rmSync(tmpDir)
+    }
+    catch {}
   })
 
   it('parses .env file and stores in cache', async () => {

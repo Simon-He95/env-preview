@@ -13,8 +13,8 @@ export async function loadEnvFiles() {
   // read files in parallel but skip cached entries
   await Promise.all(
     files
-      .filter((filepath) => !envCacheMap.has(filepath))
-      .map((filepath) => readEnv(filepath).catch((err) => console.error('readEnv failed', filepath, err))),
+      .filter(filepath => !envCacheMap.has(filepath))
+      .map(filepath => readEnv(filepath).catch(err => console.error('readEnv failed', filepath, err))),
   )
 
   // batch rapid change/delete events from the watcher
@@ -33,7 +33,7 @@ export async function loadEnvFiles() {
       // read all changed files in parallel
       const promises: Promise<any>[] = []
       for (const p of changeSet) {
-        promises.push(readEnv(p).catch((err) => console.error('readEnv failed on change', p, err)))
+        promises.push(readEnv(p).catch(err => console.error('readEnv failed on change', p, err)))
       }
       changeSet = new Set()
       Promise.all(promises).catch(() => {})
@@ -105,7 +105,7 @@ export async function loadEnv() {
   addEventListener('file-create', ({ files }) => {
     for (const file of files) {
       const newUri = file.path
-      if (/\.env(\.|$)/.test(newUri)) {
+      if (/\.env(?:\.|$)/.test(newUri)) {
         scheduleReload()
         break
       }
@@ -120,7 +120,7 @@ export async function loadEnv() {
       if (envCacheMap.has(oldUri)) {
         envCacheMap.delete(oldUri)
       }
-      if (/\.env(\.|$)/.test(newUri) || /\.env(\.|$)/.test(oldUri)) {
+      if (/\.env(?:\.|$)/.test(newUri) || /\.env(?:\.|$)/.test(oldUri)) {
         shouldReload = true
       }
     }

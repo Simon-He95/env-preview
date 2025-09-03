@@ -1,13 +1,14 @@
-export type HoverResult = { fileUrl: string; envValue: string; selection: [number, number, number, number] }
+export interface HoverResult { fileUrl: string, envValue: string, selection: [number, number, number, number] }
 
-export type HoverOptions = {
+export interface HoverOptions {
   maskSecrets?: boolean
   maskHead?: number
   maskTail?: number
 }
 
 function maskValue(val: string, head = 4, tail = 0) {
-  if (val.length <= head + tail + 3) return val
+  if (val.length <= head + tail + 3)
+    return val
   const headStr = val.slice(0, head)
   const tailStr = tail > 0 ? val.slice(val.length - tail) : ''
   return `${headStr}...${tailStr}`

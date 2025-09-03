@@ -1,4 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+import { getEnvKey } from '../src/getEnvKey'
 
 let currentLineText = ''
 let currentKeyWords: string[] = []
@@ -8,8 +10,6 @@ vi.mock('@vscode-use/utils', () => ({
   getLineText: () => currentLineText,
   getKeyWords: () => currentKeyWords,
 }))
-
-import { getEnvKey } from '../src/getEnvKey'
 
 describe('getEnvKey', () => {
   it('parses process.env.FOO when cursor on FOO', () => {
