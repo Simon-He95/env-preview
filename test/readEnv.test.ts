@@ -8,9 +8,9 @@ import { envCacheMap, readEnv } from '../src/loadEnvFiles'
 vi.mock('@vscode-use/utils', () => ({
   getRootPath: () => process.cwd(),
   watchFiles: () => {
-    return () => {}
+    return () => { }
   },
-  addEventListener: () => {},
+  addEventListener: () => { },
 }))
 
 describe('readEnv', () => {

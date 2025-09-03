@@ -6,10 +6,18 @@ import { getEnvKey } from './getEnvKey'
 import { formatHoverMarkdown } from './hoverFormatter'
 import { envCacheMap, loadEnv } from './loadEnvFiles'
 
-export = createExtension(async () => {
-  await loadEnv()
+export = createExtension(() => {
+  void loadEnv()
   runCommands()
-  registerHoverProvider('*', (_: any, position: Position) => {
+  registerHoverProvider([
+    'javascript',
+    'javascriptreact',
+    'typescript',
+    'typescriptreact',
+    'vue',
+    'svelte',
+    'astro',
+  ], (_: any, position: Position) => {
     const envKey = getEnvKey(position)
     if (!envKey)
       return
