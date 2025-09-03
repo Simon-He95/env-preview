@@ -7,23 +7,63 @@ import { glob } from 'tinyglobby'
 const cwd = getRootPath()!
 export const envCacheMap = new Map<string, { env: Record<string, string>, content: string }>()
 export async function loadEnvFiles() {
-  const files = await glob('**/.env.*', { onlyFiles: true, cwd, absolute: true })
+  // include plain .env and any .env* files
+  const files = await glob(['.env', '**/.env*'], { onlyFiles: true, cwd, absolute: true })
 
-  files.forEach((filepath) => {
-    // 如果已经在缓存中就跳过
-    if (envCacheMap.has(filepath))
-      return
+  // read files in parallel but skip cached entries
+  await Promise.all(
+    files
+      .filter((filepath) => !envCacheMap.has(filepath))
+      .map((filepath) => readEnv(filepath).catch((err) => console.error('readEnv failed', filepath, err))),
+  )
 
-    readEnv(filepath)
-  })
+  // batch rapid change/delete events from the watcher
+  let changeSet = new Set<string>()
+  let deleteSet = new Set<string>()
+  let timer: NodeJS.Timeout | undefined
+  const flush = () => {
+    // process deletes first
+    if (deleteSet.size > 0) {
+      for (const p of deleteSet) {
+        envCacheMap.delete(p)
+      }
+      deleteSet = new Set()
+    }
+    if (changeSet.size > 0) {
+      // read all changed files in parallel
+      const promises: Promise<any>[] = []
+      for (const p of changeSet) {
+        promises.push(readEnv(p).catch((err) => console.error('readEnv failed on change', p, err)))
+      }
+      changeSet = new Set()
+      Promise.all(promises).catch(() => {})
+    }
+    if (timer) {
+      clearTimeout(timer)
+      timer = undefined
+    }
+  }
+
+  const scheduleFlush = () => {
+    if (timer)
+      clearTimeout(timer)
+    timer = setTimeout(flush, 250)
+  }
+
   return watchFiles(files, {
     onChange(e) {
-      const filepath = e.path
-      // 更新文件
-      readEnv(filepath)
+      changeSet.add(e.path)
+      // if a file was previously marked deleted, unmark it
+      if (deleteSet.has(e.path))
+        deleteSet.delete(e.path)
+      scheduleFlush()
     },
     onDelete(e) {
-      envCacheMap.delete(e.path)
+      // if file was recently changed, remove it from changeSet
+      if (changeSet.has(e.path))
+        changeSet.delete(e.path)
+      deleteSet.add(e.path)
+      scheduleFlush()
     },
   })
 }
@@ -47,35 +87,44 @@ export async function readEnv(file: string) {
 export async function loadEnv() {
   // 监听 .env.xx 文件的新增，然后重新执行 loadEnvFiles()
   let dispose = await loadEnvFiles()
-  addEventListener('file-create', async ({ files }) => {
-    let isNeedUpdate = false
-    files.forEach((file: any) => {
-      const newUri = file.path
-      if (/\.env\.*/.test(newUri)) {
-        isNeedUpdate = true
+  // debounce full reload on file-create/rename events
+  let reloadTimer: NodeJS.Timeout | undefined
+  const scheduleReload = async () => {
+    if (reloadTimer)
+      clearTimeout(reloadTimer)
+    reloadTimer = setTimeout(async () => {
+      try {
+        dispose()
       }
-    })
-    if (isNeedUpdate) {
-      dispose()
+      catch {}
       dispose = await loadEnvFiles()
+      reloadTimer = undefined
+    }, 300)
+  }
+
+  addEventListener('file-create', ({ files }) => {
+    for (const file of files) {
+      const newUri = file.path
+      if (/\.env(\.|$)/.test(newUri)) {
+        scheduleReload()
+        break
+      }
     }
   })
 
-  addEventListener('rename', async ({ files }) => {
-    let isNeedUpdate = false
-    files.forEach((file: any) => {
+  addEventListener('rename', ({ files }) => {
+    let shouldReload = false
+    for (const file of files) {
       const oldUri = file.oldUri.path
       const newUri = file.newUri.path
       if (envCacheMap.has(oldUri)) {
         envCacheMap.delete(oldUri)
       }
-      if (/\.env\.*/.test(newUri)) {
-        isNeedUpdate = true
+      if (/\.env(\.|$)/.test(newUri) || /\.env(\.|$)/.test(oldUri)) {
+        shouldReload = true
       }
-    })
-    if (isNeedUpdate) {
-      dispose()
-      dispose = await loadEnvFiles()
     }
+    if (shouldReload)
+      scheduleReload()
   })
 }

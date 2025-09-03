@@ -1,31 +1,38 @@
 import type { Position } from 'vscode'
 import { getKeyWords, getLineText } from '@vscode-use/utils'
 
-export function getEnvKey(position: Position) {
-  const regexList = [
-    /import\.meta\.env\.(VITE_\w*)/g,
-    /process\.env\.([A-Z0-9_]+)/g,
+export function getEnvKey(position: Position): string | undefined {
+  const regexPatterns = [
+    'import\\.meta\\.env\\.(VITE_[A-Z0-9_]*)',
+    'process\\.env\\.([A-Z0-9_]+)',
   ]
   const { line, character } = position
-  const lineText = getLineText(line)!
-  for (const regex of regexList) {
-    regex.lastIndex = 0 // 避免 g 标志带来的 lastIndex 问题
-    let match
-    // eslint-disable-next-line no-cond-assign
-    while ((match = regex.exec(lineText)) !== null) {
-      const start = match.index
-      const end = start + match[0].length
-      if (character >= start && character <= end) {
-        return match[1]
+  const lineText = getLineText(line) || ''
+  for (const pattern of regexPatterns) {
+    const regex = new RegExp(pattern, 'g')
+    // use matchAll with a fresh global regex to iterate matches reliably
+    // eslint-disable-next-line no-restricted-syntax
+    for (const match of lineText.matchAll(regex)) {
+      const fullMatchStart = (match as any).index as number
+      const groupText = match[1]
+      const groupRelativeIndex = match[0].indexOf(groupText)
+      const groupStart = fullMatchStart + (groupRelativeIndex === -1 ? 0 : groupRelativeIndex)
+      const groupEnd = groupStart + groupText.length
+      if (character >= groupStart && character <= groupEnd) {
+        return groupText
       }
     }
   }
   const keyWords = getKeyWords(position)
-  if (!keyWords)
-    return
+  if (!keyWords || !Array.isArray(keyWords))
+    return undefined
 
-  if (keyWords[0].toLowerCase() === keyWords[0])
-    return
+  // only accept PascalCase/UPPERCASE style env-like identifiers
+  const candidate = keyWords[0]
+  if (!candidate)
+    return undefined
+  if (candidate.toLowerCase() === candidate)
+    return undefined
 
-  return keyWords
+  return candidate
 }

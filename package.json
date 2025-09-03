@@ -3,7 +3,7 @@
   "name": "env-preview",
   "displayName": "Env Preview",
   "version": "0.0.6",
-  "packageManager": "pnpm@10.11.1",
+  "packageManager": "pnpm@10.15.1",
   "description": "Instantly preview .env file variable values on hover in VS Code. Supports multiple .env files and provides quick edit/copy actions.",
   "author": "Simon He <https://github.com/Simon-He95>",
   "license": "MIT",
@@ -69,17 +69,17 @@
     "release": "nr build --minify && bumpp && nr publish"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.16.0",
-    "@types/node": "^18.19.111",
+    "@antfu/eslint-config": "^5.2.1",
+    "@types/node": "^18.19.123",
     "@types/vscode": "1.75.1",
     "@vscode-use/utils": "0.1.58",
-    "@vscode/vsce": "^3.5.0",
+    "@vscode/vsce": "^3.6.0",
     "bumpp": "^9.11.1",
-    "dotenv": "^16.5.0",
-    "eslint": "^9.28.0",
+    "dotenv": "^16.6.1",
+    "eslint": "^9.34.0",
     "tinyglobby": "^0.2.14",
     "tsdown": "^0.9.9",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }

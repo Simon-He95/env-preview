@@ -20,7 +20,7 @@
 
 > Tired of switching between different `.env` files to check variable values? This plugin lets you effortlessly preview environment variable values directly within your VS Code editor. Hover over an environment variable in your code to see its value from different `.env` files.
 
-<!-- 
+<!--
 <p align="center">
   <img src="./assets/demo.gif" alt="Env Preview Demo">
 </p>
@@ -47,6 +47,12 @@ Or, install via the [VS Code Marketplace](https://marketplace.visualstudio.com/i
 ## 💡 Usage
 
 Once installed, simply open a project with `.env` files and hover your mouse cursor over an environment variable in your code. A tooltip will appear showing the values from your configured `.env` files.
+
+## ⚙️ Behavior & Configuration
+
+- Matching strategy: by default the extension follows a "last wins" strategy when the same key appears multiple times in a single `.env` file (later declarations override earlier ones). The internal helper also supports a `first` strategy for callers that need the first occurrence.
+- Debounce / batching: file watch events are debounced (250–300ms) and processed in batches to avoid heavy I/O when many file events occur in rapid succession (for example during git operations or bulk saves).
+- Security: hover values are displayed inside code blocks and can be masked; copy actions still provide the raw value for convenience. Values are escaped to avoid markdown codeblock injection.
 
 ## 🙏 Sponsors
 

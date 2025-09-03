@@ -20,7 +20,7 @@
 
 > 还在为切换查看不同环境的 `.env` 文件而烦恼吗？这款插件让你在 VS Code 中轻松预览环境变量的值。只需将鼠标悬停在代码中的环境变量上，即可查看其在不同 `.env` 文件中的值。
 
-<!-- 
+<!--
 <p align="center">
   <img src="./assets/demo.gif" alt="Env Preview 演示">
 </p>

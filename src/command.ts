@@ -1,7 +1,7 @@
 import { createRange, jumpToLine, message, registerCommands, setCopyText } from '@vscode-use/utils'
 
 export function runCommands() {
-  registerCommands([
+  return registerCommands([
     [
       'env-preview.open',
       async (fileUrl, selection: [number, number, number, number]) => {
