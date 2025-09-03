@@ -2,7 +2,7 @@
   "publisher": "simonhe",
   "name": "env-preview",
   "displayName": "Env Preview",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "packageManager": "pnpm@10.15.1",
   "description": "Instantly preview .env file variable values on hover in VS Code. Supports multiple .env files and provides quick edit/copy actions.",
   "author": "Simon He <https://github.com/Simon-He95>",
