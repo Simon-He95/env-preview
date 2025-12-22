@@ -33,6 +33,8 @@
 *   **🚀 Quick Actions**:
     *   **Edit**: Directly jump to the variable definition in the corresponding `.env` file.
     *   **Copy**: Quickly copy the variable's value.
+*   **🔎 Go to Definition**: Cmd/Ctrl+Click an env key to jump to its `.env` definition(s).
+*   **⌨️ Completions**: Autocomplete keys after `process.env.` / `import.meta.env.` / `Deno.env.get(` / `Bun.env.`.
 *   **🏷️ Clear Identification**: Easily distinguish between different environment configurations (e.g., development, staging, production).
 
 ## 🚀 Installation
@@ -52,7 +54,31 @@ Once installed, simply open a project with `.env` files and hover your mouse cur
 
 - Matching strategy: by default the extension follows a "last wins" strategy when the same key appears multiple times in a single `.env` file (later declarations override earlier ones). The internal helper also supports a `first` strategy for callers that need the first occurrence.
 - Debounce / batching: file watch events are debounced (250–300ms) and processed in batches to avoid heavy I/O when many file events occur in rapid succession (for example during git operations or bulk saves).
+- Multi-root workspaces: env files are loaded per active workspace folder, and hover results are filtered to the current folder to avoid mixing values across projects.
+- Vite mode: when enabled, hover shows the effective value for the current `viteMode` and the `.env` override chain.
+- Vite expansion: effective value can expand `${VAR}` / `$VAR` (within Vite `.env*`), configurable via `viteExpand`.
+- Vite modes discovery: hover shows available modes based on root/envDir `.env.<mode>` filenames.
+- Vite mode switch: click “Set Vite Mode” in hover to pick a mode (updates `env-preview.viteMode`).
+- Vite envDir/envPrefix: hover provides quick actions to set `viteEnvDir` and `viteEnvPrefix`.
+- If expanded value differs, hover also shows “Copy Raw Effective”.
+- Multi-root tip: most `env-preview.*` settings are resource-scoped, so you can set different `viteMode/envDir` per workspace folder.
 - Security: hover values are displayed inside code blocks and can be masked; copy actions still provide the raw value for convenience. Values are escaped to avoid markdown codeblock injection.
+- Settings:
+  - `env-preview.maskSecrets` (default: `false`)
+  - `env-preview.maskHead` (default: `4`)
+  - `env-preview.maskTail` (default: `0`)
+  - `env-preview.maskKeyPattern` (default: `""`, example: `(?i)(token|secret|password|api_key|private_key)`)
+  - `env-preview.unmaskKeyPattern` (default: `""`)
+  - `env-preview.framework` (default: `"auto"`, values: `"auto" | "vite" | "generic"`; `auto` enables Vite mode when the key is `VITE_*` or exists in root `.env*`)
+  - `env-preview.viteMode` (default: `"development"`)
+  - `env-preview.viteEnvDir` (default: `""`, Vite `envDir`; absolute or relative to workspace root)
+  - `env-preview.viteEnvPrefix` (default: `["VITE_"]`)
+  - `env-preview.viteExpand` (default: `true`)
+  - `env-preview.viteIncludeLocalInTest` (default: `false`)
+  - `env-preview.viteHoverRefreshMs` (default: `2000`, only for envDir outside root)
+  - `env-preview.enableCompletions` (default: `true`)
+  - `env-preview.include` (default: `[".env", "**/.env", "**/.env.*"]`)
+  - `env-preview.exclude` (default ignores: `node_modules`, `.git`, `dist`, `build`, `.next`, `.turbo`, `coverage`)
 
 ## 🙏 Sponsors
 

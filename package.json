@@ -3,7 +3,7 @@
   "name": "env-preview",
   "displayName": "Env Preview",
   "version": "0.0.8",
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.26.1",
   "description": "Instantly preview .env file variable values on hover in VS Code. Supports multiple .env files and provides quick edit/copy actions.",
   "author": "Simon He <https://github.com/Simon-He95>",
   "license": "MIT",
@@ -49,7 +49,7 @@
     "Other",
     "Programming Languages"
   ],
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.75.1"
@@ -57,10 +57,160 @@
   "activationEvents": [
     "onStartupFinished"
   ],
+  "contributes": {
+    "configuration": {
+      "title": "Env Preview",
+      "properties": {
+        "env-preview.maskSecrets": {
+          "type": "boolean",
+          "default": false,
+          "scope": "resource",
+          "description": "Mask env values in hover (copy action still uses the raw value)."
+        },
+        "env-preview.maskHead": {
+          "type": "number",
+          "default": 4,
+          "minimum": 0,
+          "scope": "resource",
+          "description": "How many leading characters to keep when masking."
+        },
+        "env-preview.maskTail": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "scope": "resource",
+          "description": "How many trailing characters to keep when masking."
+        },
+        "env-preview.maskKeyPattern": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "Mask only keys that match this RegExp (ignored when maskSecrets is enabled). Example: (?i)(token|secret|password|api_key|private_key)"
+        },
+        "env-preview.unmaskKeyPattern": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "Optional RegExp to exclude keys from maskKeyPattern. Example: (?i)(public|non_secret)"
+        },
+        "env-preview.framework": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "vite",
+            "generic"
+          ],
+          "default": "auto",
+          "scope": "resource",
+          "description": "Framework-specific behavior. 'auto' enables Vite mode when the key is VITE_* or exists in root .env files."
+        },
+        "env-preview.viteMode": {
+          "type": "string",
+          "default": "development",
+          "scope": "resource",
+          "description": "Vite mode used to resolve .env.[mode] and .env.[mode].local."
+        },
+        "env-preview.viteEnvDir": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "Vite envDir. If set, .env files are resolved relative to this directory (absolute or relative to workspace root)."
+        },
+        "env-preview.viteEnvPrefix": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "VITE_"
+          ],
+          "scope": "resource",
+          "description": "Vite envPrefix. Controls which prefixed keys are considered (e.g. VITE_, PUBLIC_)."
+        },
+        "env-preview.viteExpand": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "description": "Expand variables (dotenv-expand style) when computing Vite effective value, e.g. API_URL=${HOST}/api."
+        },
+        "env-preview.viteIncludeLocalInTest": {
+          "type": "boolean",
+          "default": false,
+          "scope": "resource",
+          "description": "Include .env.local and .env.test.local when viteMode is 'test' (Vite defaults to excluding local files in test mode)."
+        },
+        "env-preview.viteHoverRefreshMs": {
+          "type": "number",
+          "default": 2000,
+          "minimum": 0,
+          "scope": "resource",
+          "description": "When Vite envDir is outside the workspace folder, periodically refresh Vite .env files on hover (0 disables)."
+        },
+        "env-preview.enableCompletions": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "description": "Enable env key completions for process.env.* and import.meta.env.*."
+        },
+        "env-preview.include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            ".env",
+            "**/.env",
+            "**/.env.*"
+          ],
+          "scope": "resource",
+          "description": "Glob patterns for env files to load."
+        },
+        "env-preview.exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/.git/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/.next/**",
+            "**/.turbo/**",
+            "**/coverage/**"
+          ],
+          "scope": "resource",
+          "description": "Glob patterns to exclude from env file discovery."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "env-preview.open",
+        "title": "Env Preview: Open Env Variable"
+      },
+      {
+        "command": "env-preview.copy",
+        "title": "Env Preview: Copy Env Value"
+      },
+      {
+        "command": "env-preview.setViteMode",
+        "title": "Env Preview: Set Vite Mode"
+      },
+      {
+        "command": "env-preview.setViteEnvDir",
+        "title": "Env Preview: Set Vite envDir"
+      },
+      {
+        "command": "env-preview.setViteEnvPrefix",
+        "title": "Env Preview: Set Vite envPrefix"
+      }
+    ]
+  },
   "scripts": {
     "dev": "nr build",
     "test": "vitest",
-    "build": "tsdown",
+    "build": "tsdown --external vscode --format cjs",
     "pack": "vsce package --no-dependencies",
     "lint": "eslint . --cache",
     "lint:fix": "nr lint --fix",
@@ -69,17 +219,17 @@
     "release": "nr build --minify && bumpp && nr publish"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.2.1",
-    "@types/node": "^18.19.123",
+    "@antfu/eslint-config": "^5.4.1",
+    "@types/node": "^18.19.130",
     "@types/vscode": "1.75.1",
     "@vscode-use/utils": "0.1.58",
-    "@vscode/vsce": "^3.6.0",
+    "@vscode/vsce": "^3.7.1",
     "bumpp": "^9.11.1",
     "dotenv": "^16.6.1",
-    "eslint": "^9.34.0",
-    "tinyglobby": "^0.2.14",
+    "eslint": "^9.39.2",
+    "tinyglobby": "^0.2.15",
     "tsdown": "^0.9.9",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   }
 }

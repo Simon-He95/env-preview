@@ -4,6 +4,14 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { envCacheMap, readEnv } from '../src/loadEnvFiles'
 
+// mock vscode module (extension runtime only) for tests
+vi.mock('vscode', () => ({
+  workspace: {
+    getConfiguration: () => ({ get: () => undefined, update: () => Promise.resolve() }),
+  },
+  Uri: { file: (p: string) => ({ fsPath: p }) },
+}))
+
 // mock vscode utilities to avoid requiring 'vscode' in tests
 vi.mock('@vscode-use/utils', () => ({
   getRootPath: () => process.cwd(),
@@ -42,5 +50,11 @@ describe('readEnv', () => {
     expect(envCacheMap.has(tmpFile)).toBe(true)
     const cached = envCacheMap.get(tmpFile)!
     expect(cached.env.FOO).toBe('bar')
+  })
+
+  it('normalizes CRLF to LF in cached content', async () => {
+    writeFileSync(tmpFile, 'FOO=bar\r\nBAZ=qux\r\n')
+    await readEnv(tmpFile)
+    expect(envCacheMap.get(tmpFile)!.content).toBe('FOO=bar\nBAZ=qux\n')
   })
 })
